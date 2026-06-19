@@ -1,0 +1,103 @@
+name: Tabiri — Daily Digest & LinkedIn
+
+on:
+  # ── Scheduled runs ──────────────────────────────────────────────────────────
+  schedule:
+    - cron: "0 7 * * *"    # Every day at 07:00 UTC  → email digest + LinkedIn post
+    - cron: "0 6 1 * *"    # Every 1st of month      → refresh LinkedIn token
+
+  # ── Manual trigger (test anytime from Actions tab) ──────────────────────────
+  workflow_dispatch:
+    inputs:
+      run_type:
+        description: "What to run"
+        required: true
+        default: "digest"
+        type: choice
+        options:
+          - digest
+          - linkedin
+          - refresh-token
+          - all
+
+# ── Jobs ────────────────────────────────────────────────────────────────────────
+jobs:
+
+  # ── 1. Daily Email Digest ────────────────────────────────────────────────────
+  email-digest:
+    name: Send Daily Email Digest
+    runs-on: ubuntu-latest
+    if: |
+      github.event.schedule == '0 7 * * *' ||
+      github.event.inputs.run_type == 'digest' ||
+      github.event.inputs.run_type == 'all'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install @sendgrid/mail
+
+      - name: Send digest to brianmasakari@gmail.com
+        run: node server/digest.js
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          ODDS_API_KEY:     ${{ secrets.ODDS_API_KEY }}
+
+  # ── 2. LinkedIn Post ─────────────────────────────────────────────────────────
+  linkedin-post:
+    name: Post to LinkedIn
+    runs-on: ubuntu-latest
+    needs: email-digest
+    if: |
+      always() &&
+      (github.event.schedule == '0 7 * * *' ||
+       github.event.inputs.run_type == 'linkedin' ||
+       github.event.inputs.run_type == 'all')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Post daily top 5 to LinkedIn
+        run: node server/linkedin-post.js
+        env:
+          LINKEDIN_TOKEN:       ${{ secrets.LINKEDIN_TOKEN }}
+          LINKEDIN_PERSON_URN:  ${{ secrets.LINKEDIN_PERSON_URN }}
+          LINKEDIN_ARTICLE_URL: ${{ secrets.LINKEDIN_ARTICLE_URL }}
+
+  # ── 3. Monthly Token Refresh ─────────────────────────────────────────────────
+  refresh-token:
+    name: Refresh LinkedIn Token
+    runs-on: ubuntu-latest
+    if: |
+      github.event.schedule == '0 6 1 * *' ||
+      github.event.inputs.run_type == 'refresh-token'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Refresh LinkedIn OAuth token
+        run: node server/refresh-token.js
+        env:
+          LINKEDIN_CLIENT_ID:     ${{ secrets.LINKEDIN_CLIENT_ID }}
+          LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
+          LINKEDIN_REFRESH_TOKEN: ${{ secrets.LINKEDIN_REFRESH_TOKEN }}

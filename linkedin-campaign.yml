@@ -1,0 +1,83 @@
+name: Tabiri LinkedIn Campaign (15–22 Jun 2026)
+
+# ── Schedule ──────────────────────────────────────────────────────────────────
+# 12:00 AM EAT = UTC+3 = 21:00 UTC the PREVIOUS day
+#
+# Day 1 — 15 Jun 2026 12:00 AM EAT = 21:00 UTC 14 Jun ✅ TONIGHT
+# Day 2 — 16 Jun 2026 12:00 AM EAT = 21:00 UTC 15 Jun
+# Day 3 — 17 Jun 2026 12:00 AM EAT = 21:00 UTC 16 Jun
+# Day 4 — 18 Jun 2026 12:00 AM EAT = 21:00 UTC 17 Jun
+# Day 5 — 19 Jun 2026 12:00 AM EAT = 21:00 UTC 18 Jun
+# Day 6 — 20 Jun 2026 12:00 AM EAT = 21:00 UTC 19 Jun
+# Day 7 — 21 Jun 2026 12:00 AM EAT = 21:00 UTC 20 Jun
+# Day 8 — 22 Jun 2026 12:00 AM EAT = 21:00 UTC 21 Jun
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  schedule:
+    - cron: "0 21 14 6 *"   # Day 1 → 15 Jun 2026 12:00 AM EAT
+    - cron: "0 21 15 6 *"   # Day 2 → 16 Jun 2026 12:00 AM EAT
+    - cron: "0 21 16 6 *"   # Day 3 → 17 Jun 2026 12:00 AM EAT
+    - cron: "0 21 17 6 *"   # Day 4 → 18 Jun 2026 12:00 AM EAT
+    - cron: "0 21 18 6 *"   # Day 5 → 19 Jun 2026 12:00 AM EAT
+    - cron: "0 21 19 6 *"   # Day 6 → 20 Jun 2026 12:00 AM EAT
+    - cron: "0 21 20 6 *"   # Day 7 → 21 Jun 2026 12:00 AM EAT
+    - cron: "0 21 21 6 *"   # Day 8 → 22 Jun 2026 12:00 AM EAT
+
+  # Manual trigger — test any day by entering day number
+  workflow_dispatch:
+    inputs:
+      day:
+        description: "Campaign day to post (1–8). Leave blank for auto-detect."
+        required: false
+        default: ""
+
+# ── Job ───────────────────────────────────────────────────────────────────────
+jobs:
+  post-campaign:
+    name: Post LinkedIn Campaign Day
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Show campaign info
+        run: |
+          echo "═══════════════════════════════════════════"
+          echo "🔮 TABIRI LinkedIn Campaign"
+          echo "   Schedule: 15 Jun – 22 Jun 2026"
+          echo "   Time: 12:00 AM EAT (21:00 UTC)"
+          echo "   Publishers: Tabiri.io + Brian W. Masakari"
+          echo "═══════════════════════════════════════════"
+          echo "UTC now: $(date -u)"
+          echo "EAT now: $(TZ='Africa/Nairobi' date)"
+          echo "Cron trigger: ${{ github.event.schedule }}"
+          echo "Manual day: ${{ github.event.inputs.day }}"
+
+      - name: Post to LinkedIn (both accounts)
+        run: node server/campaign-post.js
+        env:
+          # Which day to post (set by cron or manual input)
+          CAMPAIGN_DAY:  ${{ github.event.schedule }}
+          MANUAL_DAY:    ${{ github.event.inputs.day }}
+
+          # Tabiri.io LinkedIn Company Page
+          LINKEDIN_TOKEN_TABIRI: ${{ secrets.LINKEDIN_TOKEN_TABIRI }}
+          LINKEDIN_URN_TABIRI:   ${{ secrets.LINKEDIN_URN_TABIRI }}
+
+          # Brian Wekesa Masakari Personal Profile
+          LINKEDIN_TOKEN_BRIAN:  ${{ secrets.LINKEDIN_TOKEN_BRIAN }}
+          LINKEDIN_URN_BRIAN:    ${{ secrets.LINKEDIN_URN_BRIAN }}
+
+      - name: Confirm completion
+        run: |
+          echo "✅ Campaign post job complete"
+          echo "Check LinkedIn:"
+          echo "  Tabiri.io:  https://www.linkedin.com/company/tabiri-io"
+          echo "  Brian:      https://www.linkedin.com/in/brianmasakari"
