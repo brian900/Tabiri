@@ -1,0 +1,30 @@
+{
+  "name": "tabiri",
+  "version": "3.0.0",
+  "description": "Sports Intelligence Engine — 20 bookmakers, 9 context factors, daily email digest",
+  "private": true,
+  "homepage": "https://tabiri.vercel.app",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-scripts": "5.0.1",
+    "@sendgrid/mail": "^8.1.3",
+    "@supabase/supabase-js": "^2.45.4"
+  },
+  "scripts": {
+    "start":   "react-scripts start",
+    "build":   "react-scripts build",
+    "test":    "react-scripts test",
+    "eject":   "react-scripts eject",
+    "digest":  "node server/digest.js",
+    "linkedin":"node server/linkedin-post.js",
+    "refresh": "node server/refresh-token.js"
+  },
+  "eslintConfig": {
+    "extends": ["react-app"]
+  },
+  "browserslist": {
+    "production": [">0.2%", "not dead", "not op_mini all"],
+    "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
+  }
+}
