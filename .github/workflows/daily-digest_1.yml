@@ -1,7 +1,7 @@
 name: Tabiri — Daily Digest & LinkedIn
 
 on:
-  # ── Scheduled runs ──────────────────────────────────────────────────────────
+  # ── Scheduled runs ─────────────────────────────────────────────────────────
   schedule:
     - cron: "0 7 * * *"    # Every day at 07:00 UTC  → email digest + LinkedIn post
     - cron: "0 6 1 * *"    # Every 1st of month      → refresh LinkedIn token
@@ -20,7 +20,7 @@ on:
           - refresh-token
           - all
 
-# ── Jobs ────────────────────────────────────────────────────────────────────────
+# ── Jobs ────────────────────────────────────────────────────────────
 jobs:
 
   # ── 1. Daily Email Digest ────────────────────────────────────────────────────
@@ -40,7 +40,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
 
       - name: Install dependencies
         run: npm install @sendgrid/mail
@@ -51,7 +50,7 @@ jobs:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           ODDS_API_KEY:     ${{ secrets.ODDS_API_KEY }}
 
-  # ── 2. LinkedIn Post ─────────────────────────────────────────────────────────
+  # ── 2. LinkedIn Post ──────────────────────────────────────────────────────��─
   linkedin-post:
     name: Post to LinkedIn
     runs-on: ubuntu-latest
