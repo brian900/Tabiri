@@ -1,4 +1,6 @@
-const CAMPAIGN_POSTS = require('./campaign-posts');
+const CAMPAIGN_POSTS = require('./campaign-posts.json');
+
+const POST_TO_LINKEDIN = (process.env.POST_TO_LINKEDIN || 'false').toLowerCase() === 'true';
 
 const CRON_TO_DAY = {
   "0 21 24 6 *": 1,   // 25 Jun
@@ -13,6 +15,12 @@ async function postToLinkedIn(token, personUrn, post, accountName) {
     console.warn(`Skipping ${accountName} — token or URN not set`);
     return false;
   }
+
+  if (!POST_TO_LINKEDIN) {
+    console.log(`(DRY RUN) [${accountName}] Would post Day ${post.day}: ${post.body}`);
+    return true;
+  }
+
   const body = {
     author: personUrn,
     lifecycleState: "PUBLISHED",
@@ -85,6 +93,7 @@ async function main() {
   console.log(`Date:  ${post.eatDate}`);
   console.log(`${"=".repeat(50)}\n`);
 
+  // Post for company
   await postToLinkedIn(
     process.env.LINKEDIN_TOKEN_TABIRI,
     process.env.LINKEDIN_URN_TABIRI,
@@ -93,6 +102,7 @@ async function main() {
 
   await new Promise(r => setTimeout(r, 2000));
 
+  // Post for personal
   await postToLinkedIn(
     process.env.LINKEDIN_TOKEN_BRIAN,
     process.env.LINKEDIN_URN_BRIAN,
