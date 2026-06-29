@@ -36,7 +36,7 @@ jobs:
           echo "Manual day:   ${{ github.event.inputs.day }}"
 
       - name: Post to LinkedIn (Tabiri.io + Brian Masakari)
-        run: node server/campaign-post.js
+        run: node server/run.js
         env:
           CAMPAIGN_DAY:          ${{ github.event.schedule }}
           MANUAL_DAY:            ${{ github.event.inputs.day }}
