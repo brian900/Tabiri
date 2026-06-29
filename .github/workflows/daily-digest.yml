@@ -7,6 +7,7 @@ on:
 
 jobs:
   send-digest:
+    name: Send Daily Email Digest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,11 +15,23 @@ jobs:
         with:
           node-version: "20"
       - run: npm install @sendgrid/mail
-      - run: node server/digest.js
+      - name: Send email digest
+        run: node server/digest.js
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-      - run: node server/linkedin-post.js
+
+  linkedin-post:
+    name: Post to LinkedIn
+    runs-on: ubuntu-latest
+    needs: send-digest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Post to LinkedIn
+        run: node server/linkedin-post.js
         env:
-          LINKEDIN_TOKEN: ${{ secrets.LINKEDIN_TOKEN }}
-          LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
+          LINKEDIN_TOKEN:       ${{ secrets.LINKEDIN_TOKEN_BRIAN }}
+          LINKEDIN_PERSON_URN:  ${{ secrets.LINKEDIN_URN_BRIAN }}
           LINKEDIN_ARTICLE_URL: ${{ secrets.LINKEDIN_ARTICLE_URL }}
