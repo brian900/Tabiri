@@ -40,6 +40,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: false
 
       - name: Install dependencies
         run: npm install @sendgrid/mail
@@ -50,7 +51,7 @@ jobs:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           ODDS_API_KEY:     ${{ secrets.ODDS_API_KEY }}
 
-  # ── 2. LinkedIn Post ──────────────────────────────────────────────────────��─
+  # ── 2. LinkedIn Post ────────────────────────────────────────────────────────
   linkedin-post:
     name: Post to LinkedIn
     runs-on: ubuntu-latest
@@ -69,6 +70,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: false
 
       - name: Post daily top 5 to LinkedIn
         run: node server/linkedin-post.js
@@ -93,6 +95,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: false
 
       - name: Refresh LinkedIn OAuth token
         run: node server/refresh-token.js
