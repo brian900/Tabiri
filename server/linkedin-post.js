@@ -1,3 +1,4 @@
+
 /**
  * Tabiri — LinkedIn Daily Post
  * Posts today's top 5 picks + link to article
@@ -42,7 +43,7 @@ async function postToLinkedIn() {
   const personUrn   = process.env.LINKEDIN_PERSON_URN;
   const articleUrl  = process.env.LINKEDIN_ARTICLE_URL;
 
-  if (!token || !personUrn) {
+  if (!token) {
     console.error("❌ Missing LINKEDIN_TOKEN or LINKEDIN_PERSON_URN env vars");
     process.exit(1);
   }
