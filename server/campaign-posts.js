@@ -1,0 +1,34 @@
+const CAMPAIGN_POSTS = [
+  {
+    day: 1,
+    phase: "Idea & Setup",
+    eatDate: "2026-06-25",
+    body: "Day 1: How I started Tabiri — idea, goals, and initial setup."
+  },
+  {
+    day: 2,
+    phase: "Data & Modeling",
+    eatDate: "2026-06-26",
+    body: "Day 2: Collecting sports data and training the first model."
+  },
+  {
+    day: 3,
+    phase: "Claude AI Integration",
+    eatDate: "2026-06-27",
+    body: "Day 3: Integrating Claude for predictions and reasoning."
+  },
+  {
+    day: 4,
+    phase: "Deployment",
+    eatDate: "2026-06-28",
+    body: "Day 4: Deploying the predictor and building the UI."
+  },
+  {
+    day: 5,
+    phase: "Results & Learnings",
+    eatDate: "2026-06-29",
+    body: "Day 5: Results, lessons learned, and next steps."
+  }
+];
+
+module.exports = CAMPAIGN_POSTS;
