@@ -4,10 +4,19 @@
   "description": "Tabiri - Daily Digest & LinkedIn",
   "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "digest": "node server/digest.js",
+    "linkedin": "node server/linkedin-post.js",
+    "refresh-token": "node server/refresh-token.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["sports", "predictions", "betting", "AI"],
+  "author": "brian900",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
+    "node-fetch": "^2.6.11"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
 }
